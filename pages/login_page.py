@@ -10,7 +10,8 @@ class LoginPage:
         self.login_button = (By.XPATH,"//button[text()='Login']")
         self.consent_button_locator = (By.XPATH, "//button[./p[@class='fc-button-label' and text()='Consent']]")
         self.consent_popup_container_locator = (By.CLASS_NAME,"fc-dialog-container")
-        
+        self.error_message = (By.XPATH,"//p[contains(text(),'Your email or password is incorrect!')]")
+   
 
     def load(self):
         self.driver.get("https://automationexercise.com/login")
@@ -28,10 +29,12 @@ class LoginPage:
         WebDriverWait(self.driver,15).until(EC.visibility_of_element_located(self.consent_popup_container_locator))
         consent_element = WebDriverWait(self.driver,15).until(EC.element_to_be_clickable(self.consent_button_locator))
         consent_element.click()
-        #self.driver.execute_script("arguments[0].click();", consent_element)
         WebDriverWait(self.driver,15).until(EC.invisibility_of_element_located(self.consent_popup_container_locator))
 
     def login(self,email,password):
         self.enter_email(email)
         self.enter_password(password)
         self.click_login()
+
+    def is_login_error_displayed(self):
+        return self.driver.find_element(*self.error_message).is_displayed()
